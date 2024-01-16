@@ -5,8 +5,6 @@ volumes:
 
 services:
   tailscale:
-    privileged: true
-    env_file: .env
     build:
       context: .
       dockerfile: Dockerfile
