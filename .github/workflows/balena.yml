@@ -1,28 +1,29 @@
-name: balena
+name: Balena Deploy
 
 on:
-  pull_request:
-    types: [opened, synchronize, closed]
-    branches:
-      - main
+  release:
+    types:
+      - published
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        fleet:
-          [
-            klutchell_blocks/tailscale-aarch64,
-            klutchell_blocks/tailscale-amd64,
-            klutchell_blocks/tailscale-armv7hf,
-          ]
-
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - uses: balena-io/deploy-to-balena-action@ce90096c4f6e82c649b67502987c6e3115c7c313 # v2.0.14
-        with:
-          balena_token: ${{ secrets.BALENA_API_KEY }}
-          fleet: ${{ matrix.fleet }}
-          create_tag: true
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Set up dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openssl jq
+
+      - name: Download Balena CLI
+        run: |
+          curl -sL "https://github.com/balena-io/balena-cli/releases/download/v17.5.0/balena-cli-v17.5.0-linux-x64-standalone.zip" -o balena-cli.zip
+          unzip balena-cli.zip
+          sudo mv balena-cli/balena /usr/local/bin/balena
+          balena login --token ${{ secrets.BALENA_API_KEY }}
+
+      - name: Balena Push
+        run: |
+          balena push sun_day_carwash/balena-tailscale
