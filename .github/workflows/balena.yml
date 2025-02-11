@@ -19,7 +19,7 @@ jobs:
 
       - name: Download Balena CLI
         run: |
-          curl -sL "https://github.com/balena-io/balena-cli/releases/download/v17.5.0/balena-cli-v17.5.0-linux-x64-standalone.zip" -o balena-cli.zip
+          curl -sL "https://github.com/balena-io/balena-cli/releases/download/v20.2.3/balena-cli-v20.2.3-linux-x64-standalone.zip" -o balena-cli.zip
           unzip balena-cli.zip
           sudo mv balena-cli/balena /usr/local/bin/balena
           balena login --token ${{ secrets.BALENA_API_KEY }}
